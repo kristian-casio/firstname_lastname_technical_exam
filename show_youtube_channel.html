@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>YouTube</title>
+<style>
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 200px;
+  padding: 5px;
+  display: inline-block;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.container {
+  padding: 2px 16px;
+}
+</style>
+</head>
+<body>
+    <div>
+        <h1 id="channel-name"></h1>
+    </div>
+<script>
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+
+        var obj = JSON.parse(this.responseText);
+        var items = obj.items;
+        Object.keys(items).map(function(objectKey, index) {
+            var value = items[objectKey];
+            var channelName = value['snippet']['channelTitle'];
+            document.getElementById("channel-name").innerHTML = channelName;
+
+            var videoId = value['id']['videoId'];
+            var title = value['snippet']['title'];
+            var description = value['snippet']['description'];
+            var thumbnails = value['snippet']['thumbnails']['default']['url'];
+
+            var ahref = document.createElement("a");
+            ahref.setAttribute('href', "https://www.youtube.com/watch?v="+videoId);
+            ahref.setAttribute('target', "_blank");
+
+            var holder = document.createElement("div");
+            holder.setAttribute("id", "holder-"+index);
+            document.body.appendChild(holder);
+
+            var card = document.createElement("div");
+            card.setAttribute("id", "card-"+index);
+            card.setAttribute("class", "card");
+
+            var img = document.createElement("img");
+            img.src = thumbnails;
+
+            var container = document.createElement("div");
+            var b = document.createElement("b");
+            b.innerHTML = title;
+            var p = document.createElement("p");
+            p.innerHTML = description;
+
+            document.getElementById("holder-"+index).appendChild(ahref);
+            // document.body.appendChild(ahref);
+            // document.getElementById("holder-"+index).appendChild(ahref);
+            ahref.appendChild(card);
+            document.getElementById("card-"+index).appendChild(img);
+            // document.getElementById("card-"+index).appendChild(ahref);
+            document.getElementById("card-"+index).appendChild(container);
+            document.getElementById("card-"+index).appendChild(b);
+            document.getElementById("card-"+index).appendChild(p);
+
+        });
+    }
+};
+xhttp.open("GET", "youtube_channel_json.php", true);
+xhttp.send();
+</script>
+
+</body>
+</html>
